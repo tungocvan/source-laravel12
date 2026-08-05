@@ -176,6 +176,11 @@ class ModulesForm extends Component
 
                         $content = "<?php\n\nreturn " . var_export($manifest, true) . ";\n";
                         File::put($manifestPath, $content);
+                        clearstatcache(true, $manifestPath);
+
+                        if (function_exists('opcache_invalidate')) {
+                            opcache_invalidate($manifestPath, true);
+                        }
                     }
                 } catch (\Exception $e) {
                     // Log error and show user-friendly message
