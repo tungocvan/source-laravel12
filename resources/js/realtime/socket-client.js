@@ -1,5 +1,6 @@
 import { io } from 'socket.io-client';
 
+if (window.APP_CONFIG?.realtime?.enabled) {
 const debug = import.meta.env.DEV || import.meta.env.VITE_SOCKET_DEBUG === 'true';
 const socketHost = window.APP_CONFIG?.realtime?.url
     || window.CHAT_CONFIG_HOST
@@ -38,3 +39,4 @@ window.leaveSession = (id) => {
     socket.emit('leave-session', id);
     if (window.currentSessionId === id) window.currentSessionId = null;
 };
+}
