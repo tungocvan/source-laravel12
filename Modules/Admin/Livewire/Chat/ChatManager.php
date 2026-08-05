@@ -18,8 +18,6 @@ class ChatManager extends Component
     public function getListeners()
     {
         return [
-            // Lắng nghe từ Channel 'chat' (phát ra từ NodeJS)
-            "echo:chat,MessageSent" => 'handleIncomingMessage',
             "refresh-chat" => '$refresh',
             'refresh-widget' => '$refresh'
         ];
