@@ -8,6 +8,8 @@ const socketHost = window.APP_CONFIG?.realtime?.url
 
 window.socket ??= io(socketHost, {
     path: '/socket.io',
+    transports: ['websocket'],
+    upgrade: false,
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 1000,
