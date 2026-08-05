@@ -68,10 +68,8 @@
             };
             window.addEventListener('scroll-bottom', () => setTimeout(scroll, 50));
             scroll();
-            if (!window.socket) {
-                console.error('Socket chưa được khởi tạo');
-                return;
-            }
+
+            const initializeChatRealtime = () => {
 
             const initialSessionId = @js($chatSessionId);
 
@@ -129,6 +127,14 @@
                     // document.getElementById('chat-content').innerHTML = '';
                 }
             });
+
+            };
+
+            if (window.socket) {
+                initializeChatRealtime();
+            } else {
+                window.addEventListener('realtime:ready', initializeChatRealtime, { once: true });
+            }
         });
     </script>
 @endpush

@@ -336,6 +336,15 @@
 
             init() {
 
+                if (!window.socket) {
+                    window.addEventListener(
+                        'realtime:ready',
+                        () => this.init(),
+                        { once: true }
+                    );
+                    return;
+                }
+
                 console.log(
                     '✅ Chat initialized:',
                     componentId

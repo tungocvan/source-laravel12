@@ -17,6 +17,7 @@ window.socket ??= io(socketHost, {
 });
 
 const socket = window.socket;
+window.dispatchEvent(new CustomEvent('realtime:ready', { detail: { socket } }));
 window.currentSessionId ??= null;
 
 socket.on('connect', () => {
