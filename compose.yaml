@@ -27,6 +27,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - ./.env:/var/www/html/.env
+      - ./Modules:/var/www/html/Modules
     healthcheck:
       test: ["CMD-SHELL", "php-fpm -t >/dev/null 2>&1"]
       interval: 30s
@@ -39,9 +40,11 @@ services:
   queue:
     volumes:
       - ./.env:/var/www/html/.env
+      - ./Modules:/var/www/html/Modules
   scheduler:
     volumes:
       - ./.env:/var/www/html/.env
+      - ./Modules:/var/www/html/Modules
   web:
     build:
       context: .
