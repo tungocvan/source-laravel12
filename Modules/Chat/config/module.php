@@ -3,7 +3,7 @@
 return array (
   'name' => 'Chat',
   'type' => 'support',
-  'enabled' => false,
+  'enabled' => true,
   'depends' => 
   array (
     0 => 'Admin',

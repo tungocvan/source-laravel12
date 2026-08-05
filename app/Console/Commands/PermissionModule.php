@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionModule extends Command
 {
@@ -38,12 +39,14 @@ class PermissionModule extends Command
 
         foreach ($permissionsArray as $perm) {
 
-            if (!Permission::where('name', $perm)->exists()) {
-                Permission::create(['name' => $perm]);
+            if (! Permission::where('name', $perm)->where('guard_name', 'admin')->exists()) {
+                Permission::findOrCreate($perm, 'admin');
                 $this->info("✅ Created permission: {$perm}");
             } else {
                 $this->warn("⚠️ Already exists: {$perm}");
             }
         }
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

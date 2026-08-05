@@ -13,17 +13,13 @@ class ModulePermissionManager
     {
         $permissions = $this->permissionsFromPath($module['path']);
 
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         foreach ($permissions as $permission) {
-            Permission::query()->firstOrCreate([
-                'name' => $permission,
-                'guard_name' => 'admin',
-            ]);
+            Permission::findOrCreate($permission, 'admin');
         }
 
-        $superAdmin = Role::query()->firstOrCreate([
-            'name' => 'Super Admin',
-            'guard_name' => 'admin',
-        ]);
+        $superAdmin = Role::findOrCreate('Super Admin', 'admin');
         $superAdmin->givePermissionTo($permissions);
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
