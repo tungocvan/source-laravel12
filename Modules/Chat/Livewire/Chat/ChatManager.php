@@ -60,15 +60,17 @@ class ChatManager extends Component
         $messageText = trim($this->message);
         if (!$messageText) return;
 
-        $chatService->sendMessage([
+        $sentMessage = $chatService->sendMessage([
             'chat_session_id' => $this->activeSessionId,
             'sender_id'       => Auth::id(),
             'sender_type'     => 'admin',
             'message'         => $messageText,
         ]);
 
+        // Hiển thị ngay trong chính request Livewire. Socket.IO vẫn phát
+        // cho các client khác; appendMessage() sẽ loại bản sao theo ID.
+        $this->appendMessage($sentMessage->toArray());
         $this->reset('message');
-        // Không cần append local vì ta sẽ lắng nghe event từ Node trả về
     }
 
     // public function appendMessage($message): void 
