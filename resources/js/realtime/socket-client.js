@@ -9,8 +9,9 @@ const socketHost = window.APP_CONFIG?.realtime?.url
 
 window.socket ??= io(socketHost, {
     path: '/socket.io',
-    transports: ['polling', 'websocket'],
-    upgrade: true,
+    transports: ['websocket', 'polling'],
+    tryAllTransports: true,
+    upgrade: false,
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 1000,
