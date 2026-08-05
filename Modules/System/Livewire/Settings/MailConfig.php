@@ -31,7 +31,11 @@ class MailConfig extends Component
 
     public function sendTest(MailConfigService $mailService)
     {
-        $this->validate(['testEmail' => 'required|email']);
+        $this->validate([
+            'testEmail' => 'required|email',
+            'form.MAIL_FROM_ADDRESS' => 'required|email',
+            'form.MAIL_FROM_NAME' => 'required|string|max:255',
+        ]);
 
         $result = $mailService->testSendMail($this->form, $this->testEmail);
 
@@ -44,6 +48,11 @@ class MailConfig extends Component
 
     public function save(EnvManagerService $envManager)
     {
+        $this->validate([
+            'form.MAIL_FROM_ADDRESS' => 'required|email',
+            'form.MAIL_FROM_NAME' => 'required|string|max:255',
+        ]);
+
         $envManager->update($this->form);
         $this->dispatch('notify', type: 'success', message: 'Cấu hình Email đã được lưu!');
     }
