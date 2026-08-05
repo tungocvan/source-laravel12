@@ -26,7 +26,11 @@ class SocialConfig extends Component
 
     public function save(EnvManagerService $envManager): void
     {
-        $envManager->update($this->form);
+        if (! $envManager->update($this->form)) {
+            $this->dispatch('notify', type: 'error', message: 'Không thể ghi file .env. Vui lòng kiểm tra quyền ghi.');
+            return;
+        }
+
         $this->dispatch('notify', type: 'success', message: 'Cấu hình SEO & Social đã được cập nhật thành công!');
     }
 
