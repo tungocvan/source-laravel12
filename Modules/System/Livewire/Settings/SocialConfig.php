@@ -4,7 +4,6 @@ namespace Modules\System\Livewire\Settings;
 
 use Livewire\Component;
 use Modules\System\Services\Env\EnvManagerService;
-use Modules\System\Services\Env\SocialConfigService;
 
 class SocialConfig extends Component
 {
@@ -25,15 +24,8 @@ class SocialConfig extends Component
         }
     }
 
-    public function save(EnvManagerService $envManager, SocialConfigService $service)
+    public function save(EnvManagerService $envManager): void
     {
-        $validation = $service->validateCredentials($this->form);
-
-        if (!$validation['success']) {
-            $this->dispatch('notify', type: 'error', message: $validation['message']);
-            return;
-        }
-
         $envManager->update($this->form);
         $this->dispatch('notify', type: 'success', message: 'Cấu hình SEO & Social đã được cập nhật thành công!');
     }
