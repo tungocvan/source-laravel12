@@ -23,6 +23,10 @@
                     <label class="block text-[10px] font-bold text-gray-400 uppercase">Client Secret</label>
                     <input type="password" wire:model="form.GOOGLE_CLIENT_SECRET" class="w-full bg-transparent border-b border-gray-300 focus:border-red-500 outline-none py-1 text-sm">
                 </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase">Google Redirect</label>
+                    <input type="url" wire:model="form.GOOGLE_REDIRECT" placeholder="{{ rtrim(config('app.url'), '/') }}/auth/google/callback" class="w-full bg-transparent border-b border-gray-300 focus:border-red-500 outline-none py-1 text-sm">
+                </div>
             </div>
         </div>
 
@@ -39,6 +43,10 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase">App Secret</label>
                     <input type="password" wire:model="form.FACEBOOK_CLIENT_SECRET" class="w-full bg-transparent border-b border-gray-300 focus:border-blue-500 outline-none py-1 text-sm">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase">Facebook Redirect</label>
+                    <input type="url" wire:model="form.FACEBOOK_REDIRECT_URI" placeholder="{{ rtrim(config('app.url'), '/') }}/admin/facebook/callback" class="w-full bg-transparent border-b border-gray-300 focus:border-blue-500 outline-none py-1 text-sm">
                 </div>
             </div>
         </div>

@@ -10,8 +10,10 @@ class SocialConfig extends Component
     public array $form = [
         'GOOGLE_CLIENT_ID' => '',
         'GOOGLE_CLIENT_SECRET' => '',
+        'GOOGLE_REDIRECT' => '',
         'FACEBOOK_CLIENT_ID' => '',
         'FACEBOOK_CLIENT_SECRET' => '',
+        'FACEBOOK_REDIRECT_URI' => '',
         'TINYMCE_API_KEY' => '',
         'GOOGLE_ANALYTICS_ID' => '',
     ];
