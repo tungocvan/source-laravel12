@@ -7,7 +7,10 @@
 !menu/**
 
 !import/
-!import/**
+import/*
+!import/admission/
+!import/admission/**
+!import/data.xlsx
 
 !templates/
 !templates/**
