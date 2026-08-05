@@ -7,13 +7,19 @@ namespace Modules\System\Livewire\Database;
 use Exception;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Http;
 use Modules\System\Jobs\SendDatabaseBackupEmail;
 use Modules\System\Livewire\Concerns\AuthorizesSystemActions;
 use Modules\System\Services\DatabaseService;
 
 class BackupManager extends Component
 {
-    use AuthorizesSystemActions;
+    use AuthorizesSystemActions, WithFileUploads;
+
+    public $sqlFile;
+
+    public string $googleDriveUrl = '';
 
     public bool $showEmailModal = false;
 
@@ -71,6 +77,72 @@ class BackupManager extends Component
             session()->flash('success', "Đã xóa backup {$fileName}.");
         } catch (Exception $e) {
             $this->dispatch('notify', type: 'error', message: $e->getMessage());
+        }
+    }
+
+    public function uploadSql(DatabaseService $service): void
+    {
+        $this->authorizePermission('database.restore');
+
+        $validated = $this->validate([
+            'sqlFile' => ['required', 'file', 'max:20480'],
+        ], [
+            'sqlFile.required' => 'Vui lòng chọn file SQL.',
+            'sqlFile.max' => 'File upload trực tiếp không được vượt quá 20 MB.',
+        ]);
+
+        try {
+            $name = $service->importBackupFile(
+                $validated['sqlFile']->getRealPath(),
+                $validated['sqlFile']->getClientOriginalName(),
+            );
+            $this->reset('sqlFile');
+            session()->flash('success', "Đã tải lên {$name}. Hãy kiểm tra và bấm RESTORE khi sẵn sàng.");
+        } catch (Exception $e) {
+            $this->addError('sqlFile', $e->getMessage());
+        }
+    }
+
+    public function importFromGoogleDrive(DatabaseService $service): void
+    {
+        $this->authorizePermission('database.restore');
+        $this->validate([
+            'googleDriveUrl' => ['required', 'url', 'max:2048'],
+        ]);
+
+        if (! preg_match('~(?:/file/d/|[?&]id=)([A-Za-z0-9_-]{10,})~', $this->googleDriveUrl, $matches)) {
+            $this->addError('googleDriveUrl', 'Link Google Drive không hợp lệ. Hãy dùng link chia sẻ của một file SQL.');
+            return;
+        }
+
+        $temporaryPath = tempnam(storage_path('framework'), 'drive-sql-');
+
+        if ($temporaryPath === false) {
+            $this->addError('googleDriveUrl', 'Không thể tạo file tạm để tải backup.');
+            return;
+        }
+
+        try {
+            $response = Http::withOptions(['sink' => $temporaryPath])
+                ->connectTimeout(15)
+                ->timeout(300)
+                ->get('https://drive.usercontent.google.com/download', [
+                    'id' => $matches[1],
+                    'export' => 'download',
+                    'confirm' => 't',
+                ]);
+
+            if (! $response->successful()) {
+                throw new Exception('Google Drive trả về HTTP '.$response->status().'. Hãy kiểm tra quyền chia sẻ file.');
+            }
+
+            $name = $service->importBackupFile($temporaryPath, 'google-drive-'.$matches[1].'.sql');
+            $this->googleDriveUrl = '';
+            session()->flash('success', "Đã tải {$name} từ Google Drive. Hãy kiểm tra và bấm RESTORE khi sẵn sàng.");
+        } catch (Exception $e) {
+            $this->addError('googleDriveUrl', $e->getMessage());
+        } finally {
+            @unlink($temporaryPath);
         }
     }
 

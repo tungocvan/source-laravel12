@@ -5,6 +5,35 @@
         </div>
     @endif
 
+    <div class="grid gap-4 border-b border-gray-200 p-4 lg:grid-cols-2">
+        <div class="rounded-lg border border-dashed border-gray-300 p-4">
+            <h3 class="text-sm font-semibold text-gray-800">Upload backup từ máy tính</h3>
+            <p class="mt-1 text-xs text-gray-500">Chấp nhận full database backup định dạng .sql, tối đa 20 MB.</p>
+            <input type="file" wire:model="sqlFile" accept=".sql,application/sql,text/plain"
+                class="mt-3 block w-full text-sm text-gray-600 file:mr-3 file:rounded file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-700">
+            @error('sqlFile')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+            <button type="button" wire:click="uploadSql" wire:loading.attr="disabled"
+                class="mt-3 rounded bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50">
+                <span wire:loading.remove wire:target="uploadSql,sqlFile">TẢI FILE LÊN</span>
+                <span wire:loading wire:target="uploadSql,sqlFile">ĐANG TẢI...</span>
+            </button>
+        </div>
+
+        <div class="rounded-lg border border-dashed border-gray-300 p-4">
+            <h3 class="text-sm font-semibold text-gray-800">Nhập backup từ Google Drive</h3>
+            <p class="mt-1 text-xs text-gray-500">File phải được chia sẻ “Bất kỳ ai có liên kết”. Giới hạn 500 MB.</p>
+            <input type="url" wire:model="googleDriveUrl"
+                placeholder="https://drive.google.com/file/d/.../view"
+                class="mt-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+            @error('googleDriveUrl')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+            <button type="button" wire:click="importFromGoogleDrive" wire:loading.attr="disabled"
+                class="mt-3 rounded bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-50">
+                <span wire:loading.remove wire:target="importFromGoogleDrive">TẢI TỪ GOOGLE DRIVE</span>
+                <span wire:loading wire:target="importFromGoogleDrive">ĐANG TẢI...</span>
+            </button>
+        </div>
+    </div>
+
     <div class="p-4 border-b border-gray-200 bg-gray-50/50">
         <h3 class="font-semibold text-gray-700 flex items-center gap-2">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

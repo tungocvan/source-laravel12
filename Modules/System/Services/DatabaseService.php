@@ -210,6 +210,38 @@ class DatabaseService
         }
     }
 
+    public function importBackupFile(string $sourcePath, string $originalName): string
+    {
+        if (strtolower(pathinfo($originalName, PATHINFO_EXTENSION)) !== 'sql') {
+            throw new Exception('Chỉ chấp nhận file có phần mở rộng .sql.');
+        }
+
+        if (! is_file($sourcePath) || ! is_readable($sourcePath)) {
+            throw new Exception('Không thể đọc file SQL đã chọn.');
+        }
+
+        $size = filesize($sourcePath);
+        if ($size === false || $size > 500 * 1024 * 1024) {
+            throw new Exception('File SQL không được vượt quá 500 MB.');
+        }
+
+        if (! $this->looksLikeFullBackup($sourcePath)) {
+            throw new Exception('File không phải full database backup MySQL/MariaDB hợp lệ.');
+        }
+
+        $safeBase = preg_replace('/[^A-Za-z0-9_.-]+/', '-', pathinfo($originalName, PATHINFO_FILENAME));
+        $safeBase = trim((string) $safeBase, '.-') ?: 'database';
+        $fileName = 'uploaded_'.now()->format('Y-m-d_H-i-s').'_'.substr($safeBase, 0, 80).'.sql';
+        $destination = Storage::disk('local')->path('private/backups/'.$fileName);
+
+        $this->ensureDirectory(dirname($destination));
+        if (! copy($sourcePath, $destination)) {
+            throw new Exception('Không thể lưu file SQL vào thư mục backup.');
+        }
+
+        return $fileName;
+    }
+
     public function deleteBackup(string $backupId): int
     {
         if ($backupId !== basename($backupId) || ! preg_match('/\A[A-Za-z0-9_.-]+\.sql\z/', $backupId)) {
