@@ -15,8 +15,8 @@ Route::middleware(['web'])
 Route::middleware(['web', 'auth:admin'])->group(function () {
     //Route::get('/', [AdmissionController::class, 'adminIndex'])->name('admin.dashboard');
     //Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/', [AdmissionController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin', [AdmissionController::class, 'dashboard']);
+    Route::get('/', [AdmissionController::class, 'dashboard']);
+    Route::get('/admin', [AdmissionController::class, 'dashboard'])->name('admin.dashboard');
 });
 
 Route::middleware(['web', 'auth:admin'])
