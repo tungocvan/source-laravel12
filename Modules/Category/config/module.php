@@ -3,7 +3,7 @@
 return array (
   'name' => 'Category',
   'type' => 'support',
-  'enabled' => false,
+  'enabled' => true,
   'seeders' => 
   array (
     0 => 'Database\\Seeders\\CategoryTypeSeeder',

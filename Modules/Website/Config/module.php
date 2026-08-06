@@ -3,8 +3,15 @@
 return array (
   'name' => 'Website',
   'type' => 'domain',
-  'enabled' => false,
-  'depends' => ['User', 'Product', 'Category', 'Post', 'Order'],
+  'enabled' => true,
+  'depends' => 
+  array (
+    0 => 'User',
+    1 => 'Product',
+    2 => 'Category',
+    3 => 'Post',
+    4 => 'Order',
+  ),
   'permissions' => 
   array (
     0 => 'view_website',

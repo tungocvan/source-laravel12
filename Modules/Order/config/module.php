@@ -3,7 +3,7 @@
 return array (
   'name' => 'Order',
   'type' => 'domain',
-  'enabled' => false,
+  'enabled' => true,
   'depends' => 
   array (
     0 => 'User',
